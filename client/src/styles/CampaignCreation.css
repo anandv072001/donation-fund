@@ -1,0 +1,52 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* This is to make sure the content is centered vertically */
+    background-color: #8c9cad;
+  }
+  .campaign-form {
+    max-width: 500px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  
+  .form-group {
+    margin-bottom: 1rem;
+  }
+  
+  .btn-rainbow {
+    background-image: linear-gradient(
+      to right,
+      violet,
+      indigo,
+      blue,
+      green,
+      yellow,
+      orange,
+      red
+    );
+    color: #fff;
+    border-color: none;
+    font-weight: bold;
+    margin-top: 2rem;
+    padding: 0.5rem 2rem;
+    border-radius: 25px;
+    transition: all 0.3s ease;
+  }
+  
+  .btn-rainbow:hover {
+    filter: brightness(0.8);
+  }
+  
+  
+  .form-control {
+    font-weight: bold;
+  }
+
+  label.form-label {
+    font-size: 1.2em;
+    font-weight: bold;
+  }
+  
+  
