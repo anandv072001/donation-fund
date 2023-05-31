@@ -4,8 +4,14 @@ pragma solidity ^0.8.18;
 
 contract CampaignFactory {
     address[] public deployedCampaigns;
+    address public contractDeployer;
+
+    constructor() {
+        contractDeployer = msg.sender;
+    }
 
     function createCampaign(string memory name, string memory description, string memory url, uint target, uint minimum) public {
+        require (msg.sender == contractDeployer, "Only the contract deployer can create campaigns");
         address newCampaign = address(new Campaign(name, description, url, target, minimum, msg.sender));
         deployedCampaigns.push(newCampaign);
     }
@@ -35,6 +41,7 @@ contract Campaign {
     string public description;
     string public url;
     uint public target;
+    bool public isClosed; 
 
     modifier restricted() {
         require(msg.sender == manager, "Only the manager can call this function.");
@@ -57,8 +64,16 @@ contract Campaign {
 
     function contribute() public payable {
         require(msg.value > minimumContribution, "Amount sent is below the minimum contribution required.");
+        require(!isClosed, "Contribution is closed.");
+        
+        if (!approvers[msg.sender]) {
         contributors++;
         approvers[msg.sender] = true;
+    }
+
+        if (address(this).balance >= target) {
+            isClosed = true; 
+        }
     }
 
     function createRequest(string memory _description, uint _value, address _recipient) public restricted {
@@ -94,6 +109,10 @@ contract Campaign {
 
         request.recipient.transfer(request.value);
         request.complete = true;
+
+        if (request.complete && address(this).balance < target) {
+            isClosed = false; 
+        }
     }
 
     function getSummary() public view returns (
@@ -115,4 +134,3 @@ contract Campaign {
     function getRequestsCount() public view returns (uint256) {
     return numRequests;
 }}
-
